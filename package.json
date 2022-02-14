@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start:dev": "ts-node-dev --inspect --transpile-only --ignore-watch node-modules src/server.ts",
+    "start:dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node-modules src/shared/http/server.ts",
     "lint": "eslint . --ext .ts",
     "lint --fix": "eslint . --ext .ts --fix"
   },
