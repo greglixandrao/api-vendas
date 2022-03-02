@@ -11,3 +11,6 @@ ormconfig.json
 
 uploads/*
 !uploads/.gitkeep
+
+auth.ts
+auth-bk.ts
