@@ -3,21 +3,32 @@ import { verify } from 'jsonwebtoken';
 import AppError from '@shared/errors/AppError';
 import authConfig from '@config/auth';
 
+interface TokenPayload {
+  iat: number;
+  exp: number;
+  sub: string;
+}
+
 export default function isAuthenticated(
   request: Request,
-  responde: Response,
+  response: Response,
   next: NextFunction,
 ): void {
-  const authTHeader = request.headers.authorization;
+  const authHeader = request.headers.authorization;
 
-  if (!authTHeader) {
+  if (!authHeader) {
     throw new AppError('JWT Token is missing.');
   }
-  const [, token] = authTHeader.split(' ');
+  const [, token] = authHeader.split(' ');
 
   try {
-    // const decodeToken =
-    verify(token, authConfig.jwt.secret);
+    const decodedToken = verify(token, authConfig.jwt.secret);
+
+    const { sub } = decodedToken as TokenPayload;
+
+    request.user = {
+      id: sub,
+    };
 
     return next();
   } catch {
