@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import Order from './Order';
-import Product from '@modules/products/typeorm/entities/Product';
+import Product from '../../../products/typeorm/entities/Product';
 
 @Entity('orders_products')
 class OrdersProducts {
@@ -23,6 +23,12 @@ class OrdersProducts {
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
+  @Column()
+  product_id: string;
+
+  @Column()
+  order_id: string;
+
   @Column('decimal')
   price: number;
 
@@ -35,5 +41,4 @@ class OrdersProducts {
   @UpdateDateColumn()
   updated_at: Date;
 }
-
 export default OrdersProducts;
