@@ -1,7 +1,8 @@
+import RedisCache from '@shared/cache/RedisCache';
 import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
 import Product from '../typeorm/entities/Product';
-import { ProductRepository } from '../typeorm/repositories/ProductsRepository';
+import ProductsRepository from '../typeorm/repositories/ProductsRepository';
 
 interface IRequest {
   id: string;
@@ -17,12 +18,16 @@ class UpdateProductsService {
     price,
     quantity,
   }: IRequest): Promise<Product> {
-    const productsRepository = getCustomRepository(ProductRepository);
+    const productsRepository = getCustomRepository(ProductsRepository);
 
     const product = await productsRepository.findOne(id);
     if (!product) {
       throw new AppError('Product not found.');
     }
+    const redisCache = new RedisCache();
+
+    await redisCache.invalidate('api-vendas-PRODUCTS_LIST');
+
     const productExists = await productsRepository.findByName(name);
     if (productExists && name !== product.name) {
       throw new AppError('There is already a product with this name');
